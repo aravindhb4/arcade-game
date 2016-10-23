@@ -1,11 +1,10 @@
 Frogger - Arcade Game
 ======================
-- - - 
 ### Overview
 This game is made as a part of Udacity Front-End Nanodegree. It is a simple arcade game which uses javascript and HTML 5 Canvas element. 
 
 ### How to play
-Launch the game [here]("https://aravindhb4.github.io/arcade-game"). Your objective is to guide the character to the water without colliding with the *enemy bugs* in-between. 
+Launch the game [here](https://aravindhb4.github.io/arcade-game). Your objective is to guide the character to the water without colliding with the *enemy bugs* in-between. 
 ##### Instructions
 * Use **Spacebar** to start the game.
 * Use **arrow keys or W,A,S,D keys** to move the character.
