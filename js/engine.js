@@ -154,7 +154,7 @@ var Engine = (function(global) {
         }
         if (!game.gameOn) {
             renderIntro();
-        } else if (lives === 0) {
+        } else if (player.lives === 0) {
             renderOutro();
         } else {
             renderEntities();

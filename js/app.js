@@ -3,23 +3,28 @@ var Game = function() {
     this.gameOn = false;
 };
 
-// Game instantiate with enemy array allEnemies and a player with 3 lives
+// Game instantiate with enemy array Enemy bugs and a player
 Game.prototype.start = function() {
     allEnemies = [];
+    canvasWidth = 505;
+    canvasHeight = 586;
     for (var i = 0; i < 4; i++) {
-        var enemy = new Enemy(-i * 100, 83 * i + 62);
+        var enemy = new Enemy(-i * canvasWidth / 5, 83 * i + 62);
         allEnemies.push(enemy);
     }
-
-    player = new Player(202, 404);
-    score = 0;
-    lives = 3;
+    var initialPlayerX = 202;
+    var initialPlayerY = 404;
+    player = new Player(initialPlayerX, initialPlayerY);
     // timer = 60;
     // document.getElementById('timer').innerHTML = timer;
-    document.getElementById('lives').innerHTML = lives;
-    document.getElementById('score').innerHTML = score;
+
+    // populate initial values of the HTML
+    document.getElementById('lives').innerHTML = player.lives;
+    document.getElementById('score').innerHTML = player.score;
     document.getElementById('body').style.backgroundColor = 'lightblue';
     document.getElementById('body').style.color = 'black';
+
+    // initiate game, this will start rendering
     this.gameOn = true;
 };
 
@@ -27,19 +32,34 @@ Game.prototype.start = function() {
 Game.prototype.handleInput = function(key) {
     switch (key) {
         case 'spacebar':
-            if (!game.gameOn) {
-                game.start();
+            // If the game is not on, turn it on!
+            if (!this.gameOn) {
+                this.start();
             }
-
-            if (game.gameOn && lives === 0) {
-                game.start();
+            // If the game is On and all lives are lost, start the game again
+            if (this.gameOn && player.lives === 0) {
+                this.start();
             }
     }
 };
 
-// Game.prototype.timer = function() {
 
+
+// Game.prototype.timer = function() {
 // };
+
+
+// Superclass for Enemy and Player render functions
+var GameObject = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.sprite = '';
+};
+
+// Common render function for Enemy and Player classes
+GameObject.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
 
 // Enemies our player must avoid
 var Enemy = function(x, y) {
@@ -54,6 +74,11 @@ var Enemy = function(x, y) {
     this.rate = 100 + Math.floor(Math.random() * 100);
 };
 
+// Adding subclass to use the common render function from GameObject superclass
+// Draw the enemy on the screen, required method for game
+Enemy.prototype = Object.create(GameObject.prototype);
+Enemy.prototype.constructor = Enemy;
+
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 
@@ -61,48 +86,44 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    var startPosition = -100; // to remove magic numbers
     this.x = this.x + (dt * this.rate);
-    if (this.x > 505) {
-        this.x = -100;
+    if (this.x > canvasWidth) {
+        this.x = startPosition;
     }
 };
 
-// Increase speend of enemies for every 5 points in score
-// Also change background color to let users know
+// Increase speed of enemies for every 5 points in score
+// Also change background color to let players know
 Enemy.prototype.increaseRate = function() {
-    if (score >= 5 && this.rate < 200) {
-        this.rate += 30;
+    var rateOfIncrease = 30;
+    if (player.score >= 5 && this.rate < 200) {
+        this.rate += rateOfIncrease;
         document.getElementById('body').style.backgroundColor = '#cfe2e2';
     }
-    if (score >= 10 && this.rate < 230) {
-        this.rate += 30;
+    if (player.score >= 10 && this.rate < 230) {
+        this.rate += rateOfIncrease;
         document.getElementById('body').style.backgroundColor = '#9fc6c6';
 
     }
-    if (score >= 15 && this.rate < 260) {
-        this.rate += 30;
+    if (player.score >= 15 && this.rate < 260) {
+        this.rate += rateOfIncrease;
         document.getElementById('body').style.backgroundColor = '#70a9a9';
 
     }
-    if (score >= 20 && this.rate < 290) {
-        this.rate += 30;
+    if (player.score >= 20 && this.rate < 290) {
+        this.rate += rateOfIncrease;
         document.getElementById('body').style.backgroundColor = '#4d8080';
         document.getElementById('body').style.color = 'white';
 
     }
-    if (score >= 25 && this.rate < 320) {
+    if (player.score >= 25 && this.rate < 320) {
         this.rate += 30;
         document.getElementById('body').style.backgroundColor = 'DarkSlateGray';
         document.getElementById('body').style.color = 'white';
 
     }
 };
-
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -111,14 +132,28 @@ var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = x;
     this.y = y;
+    this.initialX = x; //to avoid magic numbers later on
+    this.initialY = y; // "
+    this.score = 0;
+    this.lives = 3;
 };
 
-// Update score of the player    
+// Adding subclass to use the common render function from GameObject superclass
+// Draw the player on the screen, required method for game
+Player.prototype = Object.create(GameObject.prototype);
+Player.prototype.constructor = Player;
+
+// Update score of the player and reset player position  
 Player.prototype.update = function() {
-    this.score();
+    if (this.y < 0) {
+        this.x = this.initialX;
+        this.y = this.initialY;
+        this.score++;
+        document.getElementById('score').innerHTML = this.score;
+    }
 };
 
-// Handle the keyboard inputs
+// Handle the keyboard inputs for player
 Player.prototype.handleInput = function(key) {
     switch (key) {
         case 'up':
@@ -143,31 +178,16 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
-// Score Update
-Player.prototype.score = function() {
-    if (this.y < 0) {
-        this.x = 202;
-        this.y = 404;
-        score++;
-        document.getElementById('score').innerHTML = score;
-    }
-};
-
-// Reduce player lives
+// Reduce player lives if collision occurs
 Player.prototype.reset = function() {
-    if (lives > 0) {
-        lives--;
-        document.getElementById('lives').innerHTML = lives;
+    if (this.lives > 0) {
+        this.lives--;
+        document.getElementById('lives').innerHTML = this.lives;
     }
-    this.x = 202;
-    this.y = 404;
+    this.x = this.initialX;
+    this.y = this.initialY;
 
 };
-
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -176,10 +196,10 @@ Player.prototype.render = function() {
 game = new Game();
 
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// player.handleInput() method and game.handleInput()
 document.addEventListener('keyup', function(e) {
     var allowedKeys;
-    if (!game.gameOn || (game.gameOn && lives === 0)) {
+    if (!game.gameOn || (game.gameOn && player.lives === 0)) {
         allowedKeys = {
             32: 'spacebar'
         };
