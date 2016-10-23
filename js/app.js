@@ -18,8 +18,8 @@ Game.prototype.start = function() {
     // document.getElementById('timer').innerHTML = timer;
     document.getElementById('lives').innerHTML = lives;
     document.getElementById('score').innerHTML = score;
-    document.getElementById('body').style.backgroundColor = "lightblue";
-    document.getElementById('body').style.color = "black";
+    document.getElementById('body').style.backgroundColor = 'lightblue';
+    document.getElementById('body').style.color = 'black';
     this.gameOn = true;
 };
 
@@ -72,28 +72,28 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.increaseRate = function() {
     if (score >= 5 && this.rate < 200) {
         this.rate += 30;
-        document.getElementById('body').style.backgroundColor = "#cfe2e2";
+        document.getElementById('body').style.backgroundColor = '#cfe2e2';
     }
     if (score >= 10 && this.rate < 230) {
         this.rate += 30;
-        document.getElementById('body').style.backgroundColor = "#9fc6c6";
+        document.getElementById('body').style.backgroundColor = '#9fc6c6';
 
     }
     if (score >= 15 && this.rate < 260) {
         this.rate += 30;
-        document.getElementById('body').style.backgroundColor = " #70a9a9";
+        document.getElementById('body').style.backgroundColor = '#70a9a9';
 
     }
     if (score >= 20 && this.rate < 290) {
         this.rate += 30;
-        document.getElementById('body').style.backgroundColor = "#4d8080";
-        document.getElementById('body').style.color = "white";
+        document.getElementById('body').style.backgroundColor = '#4d8080';
+        document.getElementById('body').style.color = 'white';
 
     }
     if (score >= 25 && this.rate < 320) {
         this.rate += 30;
-        document.getElementById('body').style.backgroundColor = "DarkSlateGray";
-        document.getElementById('body').style.color = "white";
+        document.getElementById('body').style.backgroundColor = 'DarkSlateGray';
+        document.getElementById('body').style.color = 'white';
 
     }
 };
