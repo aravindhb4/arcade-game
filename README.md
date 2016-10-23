@@ -1,6 +1,21 @@
-frontend-nanodegree-arcade-game
-===============================
+Frogger - Arcade Game
+======================
+- - - 
+### Overview
+This game is made as a part of Udacity Front-End Nanodegree. It is a simple arcade game which uses javascript and HTML 5 Canvas element. 
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+### How to play
+Launch the game [here]("https://aravindhb4.github.io/arcade-game"). Your objective is to guide the character to the water without colliding with the *enemy bugs* in-between. 
+##### Instructions
+* Use **Spacebar** to start the game.
+* Use **arrow keys or W,A,S,D keys** to move the character.
+* **3 lives** are awarded at the start and you start with a **score 0**
+* You get 1 point if you reach the water and lives will be deducted if you collide with the *enemy bugs*.
+* Game will be over once all lives are lost.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+##### Difficulty
+* 5 difficulty levels
+* The *enemy bugs will move faster* for every 5 points you score until 25 points.
+* The background color will change for each difficulty FYI.
+
+## Happy Playing!

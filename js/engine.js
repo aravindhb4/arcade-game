@@ -13,7 +13,6 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -26,7 +25,7 @@ var Engine = (function(global) {
         lastTime;
 
     canvas.width = 505;
-    canvas.height = 606;
+    canvas.height = 586;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -79,10 +78,11 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        // checkCollisions();
+        if (game.gameOn) {
+            updateEntities(dt);
+            checkCollisions();
+        }
     }
-
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -93,6 +93,7 @@ var Engine = (function(global) {
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
+            enemy.increaseRate();
         });
         player.update();
     }
@@ -103,17 +104,33 @@ var Engine = (function(global) {
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
+    // Check collisions
+    function checkCollisions() {
+        /* Check for enemy collision.
+         * Allow for 10 pixel difference in alignment of enemy and player
+         * Y positions on the same row, due to centering of sprites.
+         * Collision occurs when opposite side X coords are within 75 pixels.
+         */
+        allEnemies.forEach(function(enemy) {
+            if (player.y - enemy.y == 10) {
+                if (player.x < enemy.x + 75 && player.x + 75 > enemy.x) {
+                    player.reset();
+                }
+            }
+        });
+    }
+
     function render() {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                'images/water-block.png', // Top row is water
+                'images/stone-block.png', // Row 4 of 4 of stone
+                'images/stone-block.png', // Row 3 of 4 of stone
+                'images/stone-block.png', // Row 2 of 4 of stone
+                'images/stone-block.png', // Row 1 of 4 of stone
+                'images/grass-block.png' // Row 1 of 1 of grass
             ],
             numRows = 6,
             numCols = 5,
@@ -135,8 +152,34 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
-        renderEntities();
+        if (!game.gameOn) {
+            renderIntro();
+        } else if (lives === 0) {
+            renderOutro();
+        } else {
+            renderEntities();
+        }
+    }
+    // Render intro for the game
+    function renderIntro() {
+        var introText = 'Press \'Spacebar\' to play the game';
+        ctx.font = '10pt \'Press Start 2P\'';
+        ctx.fillStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.strokeText(introText, 40, 515);
+        ctx.fillText(introText, 40, 515);
+    }
+    // Render gameOver once all lives are lost
+    function renderOutro() {
+        var outroText1 = 'GAME OVER';
+        var outroText2 = 'Press \'Spacebar\' to play again';
+        ctx.font = '10pt \'Press Start 2P\'';
+        ctx.fillStyle = '#000';
+        ctx.lineWidth = 1;
+        ctx.strokeText(outroText1, canvas.width / 2 - 60, 255);
+        ctx.fillText(outroText1, canvas.width / 2 - 60, 255);
+        ctx.strokeText(outroText2, 50, 315);
+        ctx.fillText(outroText2, 50, 315);
     }
 
     /* This function is called by the render function and is called on each game
